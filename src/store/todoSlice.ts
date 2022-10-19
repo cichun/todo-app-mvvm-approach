@@ -1,0 +1,37 @@
+
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { TodoItemType } from "../types/genericTypes";
+import TodoStore from "./TodoStore";
+
+export const todoSlice = createSlice({
+    name: 'todo',
+    initialState: TodoStore,
+    reducers:{
+        createTodo: (state, action: {payload: {title: string}, type: string}) => {
+            state.todos = state.todos.concat([
+                {title:action.payload.title, id: nanoid()}
+            ]);
+        },
+        updateTodo: (state, action: {payload:TodoItemType, type:string}) => {
+            state.todos = state.todos.map((todoItem: TodoItemType)=>{
+                if(todoItem.id===action.payload.id) {
+                    todoItem.title = action.payload.title
+                    return todoItem
+                }
+                return todoItem
+            })
+            state.todos.concat([action.payload])
+        },
+        deleteTodo: (state, action: {payload: {id: string}, type:string}) => {
+            state.todos = state.todos.filter(
+                (todoItem: TodoItemType) => todoItem.id !== action.payload.id
+            )
+        }
+
+    }
+})
+
+//{ createTodo, updateTodo, deleteTodo } = todoSlice.actions
+export const todoActions =  todoSlice.actions
+
+export default todoSlice.reducer;
